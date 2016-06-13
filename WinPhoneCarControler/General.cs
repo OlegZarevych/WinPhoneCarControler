@@ -25,33 +25,7 @@ namespace WinPhoneCarControler
         /// <summary>
         /// Control methods
         /// </summary>
-        private void Up()
-        {
-            string command = "8";
-            MainPage O = new MainPage();
-            O.CommandSend(command);
-        }
 
-        private void Down()
-        {
-            string command = "2";
-            MainPage O = new MainPage();
-            O.CommandSend(command);
-        }
-
-        private void Left()
-        {
-            string command = "4";
-            MainPage O = new MainPage();
-            O.CommandSend(command);
-        }
-
-        private void Right()
-        {
-            string command = "6";
-            MainPage O = new MainPage();
-            O.CommandSend(command);
-        }
 
     }
 }

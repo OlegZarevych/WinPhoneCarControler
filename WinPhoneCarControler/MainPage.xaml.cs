@@ -16,6 +16,9 @@ using Windows.Networking.Proximity;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using System.Text;
+using Windows.UI.Popups;
+using Windows.Devices.Bluetooth.Rfcomm;
+using Windows.Devices.Enumeration;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
 namespace WinPhoneCarControler
@@ -72,31 +75,97 @@ namespace WinPhoneCarControler
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void TestConntection(object sender, RoutedEventArgs e)
+        public async void TestConntection(object sender, RoutedEventArgs e)
         {
             string deviceName = "HC-06";
             PeerFinder.AlternateIdentities["Bluetooth:Paired"] = ""; // Grab Paired Devices
             var PF = await PeerFinder.FindAllPeersAsync(); // Store Paired Devices
-            BTSock = new StreamSocket();
+            StreamSocket BTSock = new StreamSocket();
+
+          
+           var devicesInfoCollection = await DeviceInformation.FindAllAsync();
+
+            var device = devicesInfoCollection.FirstOrDefault(d => d.Name.ToUpper().Contains(deviceName));
+            string idDevice = device.Id;
+            var BTService = await RfcommDeviceService.FromIdAsync(idDevice);
+ //          string tmp = @"\?\BTHENUM#{00001101-0000-1000-8000-00805f9b34fb}_LOCALMFG&001d#6&268da77&0&201512225156_C00000000#{b142fc3e-fa4e-460b-8abc-072b628b3c70}";
 
             for (int i = 0; i <= PF.Count; i++)
            {
                if (PF[i].DisplayName == deviceName)
                {
-                   await BTSock.ConnectAsync(PF[i].HostName, "1");
-                   break;
+                   try
+                   {
+                       await BTSock.ConnectAsync(PF[i].HostName, BTService.ConnectionServiceName);
+//                       break;
+                   }
+                   catch (Exception ex)
+                   {
+                       MessageDialog msgbox = new MessageDialog("Exception on sending : " + ex);
+                   }
                }
            }
-            var datab = GetBufferFromByteArray(Encoding.UTF8.GetBytes("HELLO")); // Create Buffer/Packet for Sending
-            await BTSock.OutputStream.WriteAsync(datab); // Send Arduino Buffer/Packet Message
+           
+            statusField.Text = "HC-06 is connected";
+            
+
+            try
+            {
+            var datab = GetBufferFromByteArray(Encoding.UTF8.GetBytes("3")); // Create Buffer/Packet for Sending
+            var w = await BTSock.OutputStream.WriteAsync(datab); // Send Arduino Buffer/Packet Message
+             }
+
+            catch (Exception ex)
+            {
+   //             MessageBox.Show("Exception on sending : {0}", "Error", MessageBoxButton.OK, ex);
+                MessageDialog msgbox = new MessageDialog ("Exception on sending : " +ex);
+            }
         }
 
         public async void CommandSend(string command)
         {
-            BTSock = new StreamSocket();
+            StreamSocket BTSock = new StreamSocket();
 
             var datab = GetBufferFromByteArray(Encoding.UTF8.GetBytes(command)); // Create Buffer/Packet for Sending
-            await BTSock.OutputStream.WriteAsync(datab); // Send Arduino Buffer/Packet Message
+            try 
+            { 
+            var w = await BTSock.OutputStream.WriteAsync(datab); // Send Arduino Buffer/Packet Message
+                }
+            catch (Exception ex)
+            {
+                //             MessageBox.Show("Exception on sending : {0}", "Error", MessageBoxButton.OK, ex);
+                MessageDialog msgbox = new MessageDialog("Exception on sending : " + ex);
+            }
         }
+
+        private void Up_Click(object sender, RoutedEventArgs e)
+        {
+            string command = "8";
+            MainPage O = new MainPage();
+            O.CommandSend(command);
+        }
+
+        private void Down_Click(object sender, RoutedEventArgs e)
+        {
+            string command = "2";
+            MainPage O = new MainPage();
+            O.CommandSend(command);
+        }
+
+        private void Left_Click(object sender, RoutedEventArgs e)
+        {
+            string command = "4";
+            MainPage O = new MainPage();
+            O.CommandSend(command);
+        }
+
+        private void Right_Click(object sender, RoutedEventArgs e)
+        {
+            string command = "6";
+            MainPage O = new MainPage();
+            O.CommandSend(command);
+        }
+
+
     }
 }

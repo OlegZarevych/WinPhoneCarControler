@@ -9,16 +9,19 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid x:Name="Header">
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="10,20,0,0.435">
+        <Canvas x:Name="TitlePanel" Grid.Row="0" Margin="10,20,0,570">
             <TextBlock Text="Car control app" Margin="10,0,10,0" FontSize="20"/>
-            <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="320,5,0,0" Width="60" Height="23" MinWidth="35" MinHeight="50" Click="TestConntection"/>
-        </StackPanel>
+            <Button x:Name="BluetoothSettings" Content="Bluetooth" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BluetoothSettings_Click" Canvas.Left="270" Canvas.Top="-10"/>
+        </Canvas>
 
-        <StackPanel Margin="220,100,20,490">
-            <TextBlock Text="" x:Name="statusField" Height="45" />
-        </StackPanel>
+        <Canvas Margin="0,100,0,490">
+            <TextBlock Text="" x:Name="statusField" Height="45" Width="140" Canvas.Left="250" FontSize="24" />
+            <Button x:Name="TestButton" Content="Connect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="23" MinWidth="35" MinHeight="50" Click="TestConntection" Canvas.Left="10" Canvas.Top="1" />
+        </Canvas>
 
-        <Button x:Name="BluetoothSettings" Content="Bluetooth" HorizontalAlignment="Left" Margin="50,100,0,0" VerticalAlignment="Top" Click="BluetoothSettings_Click"/>
-        <Button x:Name="Up" Content="Up" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Margin="150,200,130,345" Click="Up"/>
+        <Canvas x:Name="ControlPanel" Margin="80,220,80,185">
+            <Button x:Name="Up" Content="Forward" HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Click="Up_Click" Canvas.Left="70"/>
+        </Canvas>
+
     </Grid>
 </Page>
